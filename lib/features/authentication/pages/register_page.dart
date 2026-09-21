@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -21,6 +22,8 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
+  final AuthService _authService = AuthService();
+
   static const Color backgroundColor = Color(0xFFFFF5E6);
   static const Color primaryColor = Color(0xFF9A4E25);
   static const Color darkBrown = Color(0xFF4A2A1A);
@@ -37,16 +40,52 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  void _register() {
-    if (_formKey.currentState!.validate()) {
-      // Nanti disambungkan ke API Laravel.
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Form register valid'),
-        ),
-      );
-    }
+  Future<void> _register() async {
+  if (!_formKey.currentState!.validate()) {
+    return;
   }
+
+  try {
+    await _authService.register(
+      nama: _nameController.text.trim(),
+      noHp: _phoneController.text.trim(),
+      password: _passwordController.text,
+      passwordConfirmation: _confirmPasswordController.text,
+      kodeReferral: _referralController.text.trim().isEmpty
+        ? null
+        : _referralController.text.trim(),
+    );
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Registrasi berhasil!'),
+      ),
+    );
+
+    Navigator.pushReplacementNamed(
+      context,
+      '/login',
+      arguments: 'Registrasi berhasil.',
+    );
+  } catch (e) {
+    if (!mounted) return;
+
+    String message = e.toString();
+
+    if (message.startsWith('Exception: ')) {
+      message = message.replaceFirst('Exception: ', '');
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {

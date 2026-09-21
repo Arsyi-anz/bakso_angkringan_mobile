@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'register_page.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,6 +17,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
+
+  final AuthService _authService = AuthService();
 
   // =========================
   // COLOR PALETTE
@@ -33,12 +36,37 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _login() {
-    if (_formKey.currentState!.validate()) {
-      // Nanti disambungkan ke API Laravel.
+  Future<void> _login() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    try {
+      final data = await _authService.login(
+        noHp: _phoneController.text.trim(),
+        password: _passwordController.text,
+      );
+
+      if (!mounted) return;
+
+      Navigator.pushReplacementNamed(
+        context,
+        '/home',
+        arguments: data,
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      String message = e.toString();
+
+      if (message.startsWith('Exception: ')) {
+        message = message.replaceFirst('Exception: ', '');
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Form login valid'),
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.red,
         ),
       );
     }
@@ -46,6 +74,22 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final message =
+        ModalRoute.of(context)?.settings.arguments as String?;
+
+    if (message != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: Colors.green,
+          ),
+        );
+      });
+    }
+
     return Scaffold(
       backgroundColor: backgroundColor,
       body: Stack(
@@ -115,7 +159,8 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.brown.withValues(alpha: 0.15),
+                                color:
+                                    Colors.brown.withValues(alpha: 0.15),
                                 blurRadius: 18,
                                 offset: const Offset(0, 8),
                               ),
@@ -270,7 +315,8 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment:
+                                  MainAxisAlignment.center,
                               children: [
                                 Text(
                                   'Masuk',
@@ -306,11 +352,11 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             TextButton(
                               onPressed: () {
-                                // Nanti ke Register Page.
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const RegisterPage(),
+                                    builder: (context) =>
+                                        const RegisterPage(),
                                   ),
                                 );
                               },
@@ -457,3 +503,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
