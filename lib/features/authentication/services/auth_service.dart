@@ -24,11 +24,26 @@ class AuthService {
 
     final data = jsonDecode(response.body);
 
-if (response.statusCode == 200) {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setString('token', data['token']);
-  return data;
-}
+    if (response.statusCode == 200) {
+      final prefs = await SharedPreferences.getInstance();
+
+      await prefs.setString(
+        'token',
+        data['token'],
+      );
+
+      final customerData = data['data'];
+
+      if (customerData is Map &&
+          customerData['id'] != null) {
+        await prefs.setInt(
+          'customer_id',
+          (customerData['id'] as num).toInt(),
+        );
+      }
+
+      return data;
+    }
 
     throw Exception(
       data['message'] ?? 'Login gagal. Silakan coba lagi.',
@@ -53,7 +68,8 @@ if (response.statusCode == 200) {
         'no_hp': noHp,
         'password': password,
         'password_confirmation': passwordConfirmation,
-        if (kodeReferral != null && kodeReferral.trim().isNotEmpty)
+        if (kodeReferral != null &&
+            kodeReferral.trim().isNotEmpty)
           'kode_referral': kodeReferral.trim(),
       }),
     );
@@ -61,30 +77,52 @@ if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 201) {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs =
+          await SharedPreferences.getInstance();
 
-      await prefs.setString('token', data['token']);
+      await prefs.setString(
+        'token',
+        data['token'],
+      );
+
+      final customerData = data['data'];
+
+      if (customerData is Map &&
+          customerData['id'] != null) {
+        await prefs.setInt(
+          'customer_id',
+          (customerData['id'] as num).toInt(),
+        );
+      }
 
       return data;
     }
 
-    if (response.statusCode == 422 && data['errors'] != null) {
-      final errors = data['errors'] as Map<String, dynamic>;
+    if (response.statusCode == 422 &&
+        data['errors'] != null) {
+      final errors =
+          data['errors'] as Map<String, dynamic>;
 
       final firstError = errors.values.first;
 
-      if (firstError is List && firstError.isNotEmpty) {
-        throw Exception(firstError.first.toString());
+      if (firstError is List &&
+          firstError.isNotEmpty) {
+        throw Exception(
+          firstError.first.toString(),
+        );
       }
     }
 
     throw Exception(
-      data['message'] ?? 'Registrasi gagal. Silakan coba lagi.',
+      data['message'] ??
+          'Registrasi gagal. Silakan coba lagi.',
     );
   }
 
   Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs =
+        await SharedPreferences.getInstance();
+
     final token = prefs.getString('token');
 
     if (token != null && token.isNotEmpty) {
@@ -97,7 +135,9 @@ if (response.statusCode == 200) {
       );
 
       if (response.statusCode != 200) {
-        throw Exception('Logout gagal. Silakan coba lagi.');
+        throw Exception(
+          'Logout gagal. Silakan coba lagi.',
+        );
       }
     }
 
