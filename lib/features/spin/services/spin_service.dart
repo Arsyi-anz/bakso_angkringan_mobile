@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SpinService {
-  final String baseUrl = 'https://bakso-angkringan-web-production-p47hnh.laravel.cloud/';
+  final String baseUrl = 'https://bakso-angkringan-web-production-p47hnh.laravel.cloud/api';
 
   Future<Map<String, dynamic>> getStatus() async {
     final prefs = await SharedPreferences.getInstance();

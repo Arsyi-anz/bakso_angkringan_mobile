@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  static const String baseUrl = 'https://bakso-angkringan-web-production-p47hnh.laravel.cloud/';
+  static const String baseUrl = 'https://bakso-angkringan-web-production-p47hnh.laravel.cloud';
 
   Future<Map<String, dynamic>> login({
     required String noHp,
@@ -21,6 +21,9 @@ class AuthService {
         'password': password,
       }),
     );
+
+    print('LOGIN STATUS: ${response.statusCode}');
+    print('LOGIN BODY: ${response.body}');  
 
     final data = jsonDecode(response.body);
 
@@ -58,7 +61,7 @@ class AuthService {
     String? kodeReferral,
   }) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/register'),
+    Uri.parse('$baseUrl/register'),   
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',

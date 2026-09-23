@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/reward_model.dart';
 
 class RewardService {
-  static const String baseUrl = 'https://bakso-angkringan-web-production-p47hnh.laravel.cloud/';
+  static const String baseUrl = 'https://bakso-angkringan-web-production-p47hnh.laravel.cloud/api';
 
   Future<RewardModel> getHampersReward() async {
     final prefs = await SharedPreferences.getInstance();

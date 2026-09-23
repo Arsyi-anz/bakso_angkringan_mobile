@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TransactionService {
-  static const String baseUrl = 'https://bakso-angkringan-web-production-p47hnh.laravel.cloud/';
+  static const String baseUrl = 'https://bakso-angkringan-web-production-p47hnh.laravel.cloud/api';
 
   Future<List<Map<String, dynamic>>> getTransactions() async {
     final prefs = await SharedPreferences.getInstance();
