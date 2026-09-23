@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class InstagramStoryService {
-  static const String baseUrl = 'http://127.0.0.1:8000/api';
+  static const String baseUrl = 'https://bakso-angkringan-web-production-p47hnh.laravel.cloud/';
 
   Future<Map<String, dynamic>> submitStory(String link) async {
     final prefs = await SharedPreferences.getInstance();

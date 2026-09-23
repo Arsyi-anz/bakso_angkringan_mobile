@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/voucher_model.dart';
 
 class VoucherService {
-  static const String baseUrl = 'http://127.0.0.1:8000/api';
+  static const String baseUrl = 'https://bakso-angkringan-web-production-p47hnh.laravel.cloud/';
 
   Future<List<VoucherModel>> getVouchers() async {
     final prefs = await SharedPreferences.getInstance();
