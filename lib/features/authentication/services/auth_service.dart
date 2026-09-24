@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  static const String baseUrl = 'https://bakso-angkringan-web-production-p47hnh.laravel.cloud';
+  static const String baseUrl = 'https://bakso-angkringan-web-production-p47hnh.laravel.cloud/api';
 
   Future<Map<String, dynamic>> login({
     required String noHp,
